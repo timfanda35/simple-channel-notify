@@ -66,3 +66,33 @@ docker run \
 References:
 
 - [Incoming Webhooks for Slack](https://slack.com/intl/en-tw/help/articles/115005265063-Incoming-Webhooks-for-Slack)
+
+## GitLab CI Config Sample
+
+`.gitlab-ci.yml`
+
+```
+stages:
+ - run
+
+notify-telegram:
+  image:
+    name: timfanda35/simple-channel-notify
+    entrypoint: [""]
+  script:
+  - /app telegram --message="Message from GitLab CI"
+  stage: run
+```
+
+## Google Cloud Build Config Sample
+
+`cloudbuild.yaml`
+
+```
+steps:
+  - name: 'timfanda35/simple-channel-notify'
+    args: [ 'telegram', '--message=Message from Cloud Build' ]
+    env:
+    - 'NOTIFY_TELEGRAM_TOKEN=${_NOTIFY_TELEGRAM_TOKEN}'
+    - 'NOTIFY_TELEGRAM_CHAT_ID=${_NOTIFY_TELEGRAM_CHAT_ID}'
+```
