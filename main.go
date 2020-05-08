@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -31,10 +32,10 @@ func notifyTelegram(message string) {
 		log.Fatal("NOTIFY_TELEGRAM_CHAT_ID environment variable is unset")
 	}
 
-	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", telegramToken)
+	endpoint := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", telegramToken)
 	payload := fmt.Sprintf(`{"chat_id": "%s","text":"%s"}`, telegramChatID, message)
 
-	req, err := http.NewRequest("POST", url, strings.NewReader(payload))
+	req, err := http.NewRequest("POST", endpoint, strings.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -48,13 +49,51 @@ func notifyTelegram(message string) {
 	log.Print("Telegram notified")
 }
 
+/*
+	# Line Notify
+
+	Parameters:
+	- message
+
+  Environment variables:
+  - NOTIFY_LINE_NOTIFY_TOKEN
+*/
+func notifyLineNotify(message string) {
+	// Load environment variables
+	lineNotifyToken, ok := os.LookupEnv("NOTIFY_LINE_NOTIFY_TOKEN")
+	if !ok {
+		log.Fatal("NOTIFY_LINE_NOTIFY_TOKEN environment variable is unset")
+	}
+
+	endpoint := "https://notify-api.line.me/api/notify"
+	data := url.Values{"message":{message}}
+	body := strings.NewReader(data.Encode())
+
+	req, err := http.NewRequest("POST", endpoint, body)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", lineNotifyToken))
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+			panic(err)
+	}
+	defer resp.Body.Close()
+
+	ioutil.ReadAll(resp.Body)
+	log.Print("Line Notify notified")
+}
+
 func main() {
 	// Subcommands
 	telegramCmd := flag.NewFlagSet("telegram", flag.ExitOnError)
 	telegramMessage := telegramCmd.String("message", "This is a test message", "message")
 
+	lineNotifyCmd := flag.NewFlagSet("lineNotify", flag.ExitOnError)
+	lineNotifyMessage := lineNotifyCmd.String("message", "This is a test message", "message")
+
 	if len(os.Args) < 2 {
-		log.Println("Expected 'telegram'")
+		log.Println("Expected 'telegram' or 'linenotify'")
 		os.Exit(1)
 	}
 
@@ -62,6 +101,9 @@ func main() {
 	case "telegram":
 		telegramCmd.Parse(os.Args[2:])
 		notifyTelegram(*telegramMessage)
+	case "linenotify":
+		lineNotifyCmd.Parse(os.Args[2:])
+		notifyLineNotify(*lineNotifyMessage)
 	default:
 		log.Println("Expected 'telegram'")
 		os.Exit(1)
