@@ -84,16 +84,51 @@ func notifyLineNotify(message string) {
 	log.Print("Line Notify notified")
 }
 
+/*
+	# Hangouts Chat
+
+	Parameters:
+	- message
+
+  Environment variables:
+  - NOTIFY_HANGOUTS_CHAT_WEBHOOK
+*/
+func notifyHangoutsChat(message string) {
+	// Load environment variables
+	hangoutsChatWebhook, ok := os.LookupEnv("NOTIFY_HANGOUTS_CHAT_WEBHOOK")
+	if !ok {
+		log.Fatal("NOTIFY_HANGOUTS_CHAT_WEBHOOK environment variable is unset")
+	}
+
+	payload := fmt.Sprintf(`{"text":"%s"}`, message)
+
+	req, err := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+			panic(err)
+	}
+	defer resp.Body.Close()
+
+	ioutil.ReadAll(resp.Body)
+	log.Print("Hangouts Chat notified")
+}
+
 func main() {
 	// Subcommands
 	telegramCmd := flag.NewFlagSet("telegram", flag.ExitOnError)
 	telegramMessage := telegramCmd.String("message", "This is a test message", "message")
 
-	lineNotifyCmd := flag.NewFlagSet("lineNotify", flag.ExitOnError)
+	lineNotifyCmd := flag.NewFlagSet("linenotify", flag.ExitOnError)
 	lineNotifyMessage := lineNotifyCmd.String("message", "This is a test message", "message")
 
+	hangoutsChatCmd := flag.NewFlagSet("hangoutschat", flag.ExitOnError)
+	hangoutsChatMessage := hangoutsChatCmd.String("message", "This is a test message", "message")
+
 	if len(os.Args) < 2 {
-		log.Println("Expected 'telegram' or 'linenotify'")
+		log.Println("Expected 'telegram', 'linenotify', or 'hangoutschat'")
 		os.Exit(1)
 	}
 
@@ -104,6 +139,9 @@ func main() {
 	case "linenotify":
 		lineNotifyCmd.Parse(os.Args[2:])
 		notifyLineNotify(*lineNotifyMessage)
+	case "hangoutschat":
+		hangoutsChatCmd.Parse(os.Args[2:])
+		notifyHangoutsChat(*hangoutsChatMessage)
 	default:
 		log.Println("Expected 'telegram'")
 		os.Exit(1)
