@@ -38,3 +38,17 @@ References:
 
 - [LINE Notify API Document](https://notify-bot.line.me/doc/en/)
 - [自建 LINE Notify 訊息通知](https://www.oxxostudio.tw/articles/201806/line-notify.html)
+
+## Hangouts Chat
+
+Send notify message to Hangouts Chat
+
+```
+docker run \
+ -e NOTIFY_HANGOUTS_CHAT_WEBHOOK="$NOTIFY_HANGOUTS_CHAT_WEBHOOK" \
+ simple-channel-notify hangoutschat --message="Notify Message~~~"
+```
+
+References:
+
+- [Using incoming webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks)
