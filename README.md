@@ -52,3 +52,17 @@ docker run \
 References:
 
 - [Using incoming webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks)
+
+## Slack
+
+Send notify message to Slcak Channel
+
+```
+docker run \
+ -e NOTIFY_SLACK_WEBHOOK="$NOTIFY_SLACK_WEBHOOK" \
+ simple-channel-notify slack   --message="Notify Message~~~"
+```
+
+References:
+
+- [Incoming Webhooks for Slack](https://slack.com/intl/en-tw/help/articles/115005265063-Incoming-Webhooks-for-Slack)

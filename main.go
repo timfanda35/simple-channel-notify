@@ -116,6 +116,38 @@ func notifyHangoutsChat(message string) {
 	log.Print("Hangouts Chat notified")
 }
 
+/*
+	# Slack
+
+	Parameters:
+	- message
+
+  Environment variables:
+  - NOTIFY_SLACK_WEBHOOK
+*/
+func notifySlack(message string) {
+	// Load environment variables
+	hangoutsChatWebhook, ok := os.LookupEnv("NOTIFY_SLACK_WEBHOOK")
+	if !ok {
+		log.Fatal("NOTIFY_SLACK_WEBHOOK environment variable is unset")
+	}
+
+	payload := fmt.Sprintf(`{"text":"%s"}`, message)
+
+	req, err := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+			panic(err)
+	}
+	defer resp.Body.Close()
+
+	ioutil.ReadAll(resp.Body)
+	log.Print("Slack notified")
+}
+
 func main() {
 	// Subcommands
 	telegramCmd := flag.NewFlagSet("telegram", flag.ExitOnError)
@@ -127,8 +159,11 @@ func main() {
 	hangoutsChatCmd := flag.NewFlagSet("hangoutschat", flag.ExitOnError)
 	hangoutsChatMessage := hangoutsChatCmd.String("message", "This is a test message", "message")
 
+	slackCmd := flag.NewFlagSet("slack", flag.ExitOnError)
+	slackMessage := slackCmd.String("message", "This is a test message", "message")
+
 	if len(os.Args) < 2 {
-		log.Println("Expected 'telegram', 'linenotify', or 'hangoutschat'")
+		log.Println("Expected 'telegram', 'linenotify', 'hangoutschat', or 'slack'")
 		os.Exit(1)
 	}
 
@@ -142,6 +177,9 @@ func main() {
 	case "hangoutschat":
 		hangoutsChatCmd.Parse(os.Args[2:])
 		notifyHangoutsChat(*hangoutsChatMessage)
+	case "slack":
+		slackCmd.Parse(os.Args[2:])
+		notifySlack(*slackMessage)
 	default:
 		log.Println("Expected 'telegram'")
 		os.Exit(1)
