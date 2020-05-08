@@ -6,7 +6,7 @@ COPY . ./
 RUN make build
 
 # Builder
-FROM centurylink/ca-certs
+FROM alpine
 
 COPY --from=builder /src/app /
 ENTRYPOINT ["/app"]
