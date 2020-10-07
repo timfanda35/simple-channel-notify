@@ -1,5 +1,15 @@
 # Simple Channel Notity
 
+Send simple message via channel's RESTful API.
+
+Support channels:
+- Telegram
+- Line Notify
+- Hangouts Chat
+- Slack
+
+Pre-build container image on Dokcer Hub: https://hub.docker.com/r/timfanda35/simple-channel-notify
+
 ## Build
 
 Build conainer image
