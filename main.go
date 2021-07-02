@@ -148,6 +148,38 @@ func notifySlack(message string) {
 	log.Print("Slack notified")
 }
 
+/*
+	# Discord
+
+	Parameters:
+	- message
+
+  Environment variables:
+  - NOTIFY_DISCORD_WEBHOOK
+*/
+func notifyDiscord(message string) {
+	// Load environment variables
+	hangoutsChatWebhook, ok := os.LookupEnv("NOTIFY_DISCORD_WEBHOOK")
+	if !ok {
+		log.Fatal("NOTIFY_DISCORD_WEBHOOK environment variable is unset")
+	}
+
+	payload := fmt.Sprintf(`{"content":"%s"}`, message)
+
+	req, err := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+			panic(err)
+	}
+	defer resp.Body.Close()
+
+	ioutil.ReadAll(resp.Body)
+	log.Print("Discord notified")
+}
+
 func main() {
 	// Subcommands
 	telegramCmd := flag.NewFlagSet("telegram", flag.ExitOnError)
@@ -162,8 +194,11 @@ func main() {
 	slackCmd := flag.NewFlagSet("slack", flag.ExitOnError)
 	slackMessage := slackCmd.String("message", "This is a test message", "message")
 
+	discordCmd := flag.NewFlagSet("discord", flag.ExitOnError)
+	discordMessage := discordCmd.String("message", "This is a test message", "message")
+
 	if len(os.Args) < 2 {
-		log.Println("Expected 'telegram', 'linenotify', 'hangoutschat', or 'slack'")
+		log.Println("Expected 'telegram', 'linenotify', 'hangoutschat', 'slack', or 'discord'")
 		os.Exit(1)
 	}
 
@@ -180,8 +215,11 @@ func main() {
 	case "slack":
 		slackCmd.Parse(os.Args[2:])
 		notifySlack(*slackMessage)
+	case "discord":
+		discordCmd.Parse(os.Args[2:])
+		notifyDiscord(*discordMessage)
 	default:
-		log.Println("Expected 'telegram'")
+		log.Println("Expected 'telegram', 'linenotify', 'hangoutschat', 'slack', or 'discord'")
 		os.Exit(1)
 	}
 }

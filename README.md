@@ -1,4 +1,4 @@
-# Simple Channel Notity
+# Simple Channel Notify
 
 Send simple message via channel's RESTful API.
 
@@ -7,12 +7,13 @@ Support channels:
 - Line Notify
 - Hangouts Chat
 - Slack
+- Discord
 
 Pre-build container image on Dokcer Hub: https://hub.docker.com/r/timfanda35/simple-channel-notify
 
 ## Build
 
-Build conainer image
+Build container image
 
 ```
 docker build -t simple-channel-notify .
@@ -65,17 +66,31 @@ References:
 
 ## Slack
 
-Send notify message to Slcak Channel
+Send notify message to Slack Channel
 
 ```
 docker run \
  -e NOTIFY_SLACK_WEBHOOK="$NOTIFY_SLACK_WEBHOOK" \
- simple-channel-notify slack   --message="Notify Message~~~"
+ simple-channel-notify slack --message="Notify Message~~~"
 ```
 
 References:
 
 - [Incoming Webhooks for Slack](https://slack.com/intl/en-tw/help/articles/115005265063-Incoming-Webhooks-for-Slack)
+
+## Discord
+
+Send notify message to Discord Text Channel
+
+```
+docker run \
+ -e NOTIFY_DISCORD_WEBHOOK="$NOTIFY_DISCORD_WEBHOOK" \
+ simple-channel-notify discord --message="Notify Message~~~"
+```
+
+References:
+
+- [Webhook Resource](https://discord.com/developers/docs/resources/webhook#execute-webhook)
 
 ## GitLab CI Config Sample
 
