@@ -41,7 +41,7 @@ func notifyTelegram(message string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-			panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 
@@ -66,7 +66,7 @@ func notifyLineNotify(message string) {
 	}
 
 	endpoint := "https://notify-api.line.me/api/notify"
-	data := url.Values{"message":{message}}
+	data := url.Values{"message": {message}}
 	body := strings.NewReader(data.Encode())
 
 	req, err := http.NewRequest("POST", endpoint, body)
@@ -76,7 +76,7 @@ func notifyLineNotify(message string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-			panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 
@@ -108,7 +108,7 @@ func notifyHangoutsChat(message string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-			panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 
@@ -140,7 +140,7 @@ func notifySlack(message string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-			panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 
@@ -172,7 +172,7 @@ func notifyDiscord(message string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-			panic(err)
+		panic(err)
 	}
 	defer resp.Body.Close()
 
