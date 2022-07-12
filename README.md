@@ -9,7 +9,7 @@ Support channels:
 - Slack
 - Discord
 
-Pre-build container image on Dokcer Hub: https://hub.docker.com/r/timfanda35/simple-channel-notify
+Pre-build container image on [Releases](https://github.com/timfanda35/simple-channel-notify/pkgs/container/simple-channel-notify%2Fsimple-channel-notify)
 
 ## Build
 
@@ -101,12 +101,12 @@ stages:
  - run
 
 notify-telegram:
+  stage: run
   image:
-    name: timfanda35/simple-channel-notify
+    name: 'ghcr.io/timfanda35/simple-channel-notify/simple-channel-notify'
     entrypoint: [""]
   script:
-  - /app telegram --message="Message from GitLab CI"
-  stage: run
+    - /app telegram --message="Message from GitLab CI"
 ```
 
 ## Google Cloud Build Config Sample
@@ -115,9 +115,9 @@ notify-telegram:
 
 ```
 steps:
-  - name: 'timfanda35/simple-channel-notify'
+  - name: 'ghcr.io/timfanda35/simple-channel-notify/simple-channel-notify'
     args: [ 'telegram', '--message=Message from Cloud Build' ]
     env:
-    - 'NOTIFY_TELEGRAM_TOKEN=${_NOTIFY_TELEGRAM_TOKEN}'
-    - 'NOTIFY_TELEGRAM_CHAT_ID=${_NOTIFY_TELEGRAM_CHAT_ID}'
+      - 'NOTIFY_TELEGRAM_TOKEN=${_NOTIFY_TELEGRAM_TOKEN}'
+      - 'NOTIFY_TELEGRAM_CHAT_ID=${_NOTIFY_TELEGRAM_CHAT_ID}'
 ```
