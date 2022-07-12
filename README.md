@@ -9,8 +9,9 @@ Support channels:
 - Slack
 - Discord
 
-Pre-build container image on [Releases](https://github.com/timfanda35/simple-channel-notify/pkgs/container/simple-channel-notify%2Fsimple-channel-notify)
+Pre-build container image on [Releases](https://github.com/timfanda35/simple-channel-notify/pkgs/container/simple-channel-notify)
 
+Repository: `ghcr.io/timfanda35/simple-channel-notify`
 ## Build
 
 Build container image
@@ -30,6 +31,10 @@ docker run \
  simple-channel-notify telegram --message="Notify Message~~~"
 ```
 
+Environment Variables
+- NOTIFY_TELEGRAM_TOKEN
+- NOTIFY_TELEGRAM_CHAT_ID
+
 References:
 
 - [從零開始的 Telegram Bot](https://blog.sean.taipei/2017/05/telegram-bot)
@@ -45,6 +50,9 @@ docker run \
  simple-channel-notify linenotify --message="Notify Message~~~"
 ```
 
+Environment Variables
+- NOTIFY_LINE_NOTIFY_TOKEN
+
 References:
 
 - [LINE Notify API Document](https://notify-bot.line.me/doc/en/)
@@ -59,6 +67,9 @@ docker run \
  -e NOTIFY_HANGOUTS_CHAT_WEBHOOK="$NOTIFY_HANGOUTS_CHAT_WEBHOOK" \
  simple-channel-notify hangoutschat --message="Notify Message~~~"
 ```
+
+Environment Variables
+- NOTIFY_HANGOUTS_CHAT_WEBHOOK
 
 References:
 
@@ -88,6 +99,9 @@ docker run \
  simple-channel-notify discord --message="Notify Message~~~"
 ```
 
+Environment Variables
+- NOTIFY_DISCORD_WEBHOOK
+
 References:
 
 - [Webhook Resource](https://discord.com/developers/docs/resources/webhook#execute-webhook)
@@ -103,7 +117,7 @@ stages:
 notify-telegram:
   stage: run
   image:
-    name: 'ghcr.io/timfanda35/simple-channel-notify/simple-channel-notify'
+    name: 'ghcr.io/timfanda35/simple-channel-notify'
     entrypoint: [""]
   script:
     - /app telegram --message="Message from GitLab CI"
@@ -115,7 +129,7 @@ notify-telegram:
 
 ```
 steps:
-  - name: 'ghcr.io/timfanda35/simple-channel-notify/simple-channel-notify'
+  - name: 'ghcr.io/timfanda35/simple-channel-notify'
     args: [ 'telegram', '--message=Message from Cloud Build' ]
     env:
       - 'NOTIFY_TELEGRAM_TOKEN=${_NOTIFY_TELEGRAM_TOKEN}'
