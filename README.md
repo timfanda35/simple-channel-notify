@@ -107,6 +107,40 @@ References:
 
 - [Webhook Resource](https://discord.com/developers/docs/resources/webhook#execute-webhook)
 
+
+## GitHub Action Config Sample
+
+Set the required environment variables in GitLab `Settings -> Secrets -> Acctions` page.
+
+- `NOTIFY_TELEGRAM_TOKEN`
+- `NOTIFY_TELEGRAM_CHAT_ID`
+
+```
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify
+        run: |
+          docker run \
+          -e NOTIFY_TELEGRAM_TOKEN="${{ secrets.NOTIFY_TELEGRAM_TOKEN }}" \
+          -e NOTIFY_TELEGRAM_CHAT_ID="${{ secrets.NOTIFY_TELEGRAM_CHAT_ID }}" \
+          ghcr.io/timfanda35/simple-channel-notify \
+          telegram --message="Notify Message~~~"
+```
+
+Reference: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
 ## GitLab CI Config Sample
 
 Set the required environment variables in GitLab `Settings -> CI/CD -> Variables` page.
