@@ -12,13 +12,6 @@ Support channels:
 Pre-build container image on [Releases](https://github.com/timfanda35/simple-channel-notify/pkgs/container/simple-channel-notify)
 
 Repository: `ghcr.io/timfanda35/simple-channel-notify`
-## Build
-
-Build container image
-
-```
-docker build -t simple-channel-notify .
-```
 
 ## Telegram
 
@@ -26,14 +19,15 @@ Send notify message to Telegram
 
 ```
 docker run \
- -e NOTIFY_TELEGRAM_TOKEN="$NOTIFY_TELEGRAM_TOKEN" \
- -e NOTIFY_TELEGRAM_CHAT_ID="$NOTIFY_TELEGRAM_CHAT_ID" \
- simple-channel-notify telegram --message="Notify Message~~~"
+  -e NOTIFY_TELEGRAM_TOKEN="$NOTIFY_TELEGRAM_TOKEN" \
+  -e NOTIFY_TELEGRAM_CHAT_ID="$NOTIFY_TELEGRAM_CHAT_ID" \
+  ghcr.io/timfanda35/simple-channel-notify \
+  telegram --message="Notify Message~~~"
 ```
 
 Environment Variables
-- NOTIFY_TELEGRAM_TOKEN
-- NOTIFY_TELEGRAM_CHAT_ID
+- `NOTIFY_TELEGRAM_TOKEN`
+- `NOTIFY_TELEGRAM_CHAT_ID`
 
 References:
 
@@ -46,12 +40,13 @@ Send notify message to Line Notify
 
 ```
 docker run \
- -e NOTIFY_LINE_NOTIFY_TOKEN="$NOTIFY_LINE_NOTIFY_TOKEN" \
- simple-channel-notify linenotify --message="Notify Message~~~"
+  -e NOTIFY_LINE_NOTIFY_TOKEN="$NOTIFY_LINE_NOTIFY_TOKEN" \
+  ghcr.io/timfanda35/simple-channel-notify \
+  linenotify --message="Notify Message~~~"
 ```
 
 Environment Variables
-- NOTIFY_LINE_NOTIFY_TOKEN
+- `NOTIFY_LINE_NOTIFY_TOKEN`
 
 References:
 
@@ -64,8 +59,9 @@ Send notify message to Hangouts Chat
 
 ```
 docker run \
- -e NOTIFY_HANGOUTS_CHAT_WEBHOOK="$NOTIFY_HANGOUTS_CHAT_WEBHOOK" \
- simple-channel-notify hangoutschat --message="Notify Message~~~"
+  -e NOTIFY_HANGOUTS_CHAT_WEBHOOK="$NOTIFY_HANGOUTS_CHAT_WEBHOOK" \
+  ghcr.io/timfanda35/simple-channel-notify \
+  hangoutschat --message="Notify Message~~~"
 ```
 
 Environment Variables
@@ -81,9 +77,13 @@ Send notify message to Slack Channel
 
 ```
 docker run \
- -e NOTIFY_SLACK_WEBHOOK="$NOTIFY_SLACK_WEBHOOK" \
- simple-channel-notify slack --message="Notify Message~~~"
+  -e NOTIFY_SLACK_WEBHOOK="$NOTIFY_SLACK_WEBHOOK" \
+  ghcr.io/timfanda35/simple-channel-notify \
+  slack --message="Notify Message~~~"
 ```
+
+Environment Variables
+- `NOTIFY_SLACK_WEBHOOK`
 
 References:
 
@@ -95,18 +95,24 @@ Send notify message to Discord Text Channel
 
 ```
 docker run \
- -e NOTIFY_DISCORD_WEBHOOK="$NOTIFY_DISCORD_WEBHOOK" \
- simple-channel-notify discord --message="Notify Message~~~"
+  -e NOTIFY_DISCORD_WEBHOOK="$NOTIFY_DISCORD_WEBHOOK" \
+  ghcr.io/timfanda35/simple-channel-notify \
+  discord --message="Notify Message~~~"
 ```
 
 Environment Variables
-- NOTIFY_DISCORD_WEBHOOK
+- `NOTIFY_DISCORD_WEBHOOK`
 
 References:
 
 - [Webhook Resource](https://discord.com/developers/docs/resources/webhook#execute-webhook)
 
 ## GitLab CI Config Sample
+
+Set the required environment variables in GitLab `Settings -> CI/CD -> Variables` page.
+
+- `NOTIFY_TELEGRAM_TOKEN`
+- `NOTIFY_TELEGRAM_CHAT_ID`
 
 `.gitlab-ci.yml`
 
@@ -123,6 +129,9 @@ notify-telegram:
     - /app telegram --message="Message from GitLab CI"
 ```
 
+Reference:
+https://docs.gitlab.com/ee/ci/yaml/gitlab_ci_yaml.html
+
 ## Google Cloud Build Config Sample
 
 `cloudbuild.yaml`
@@ -134,4 +143,15 @@ steps:
     env:
       - 'NOTIFY_TELEGRAM_TOKEN=${_NOTIFY_TELEGRAM_TOKEN}'
       - 'NOTIFY_TELEGRAM_CHAT_ID=${_NOTIFY_TELEGRAM_CHAT_ID}'
+```
+
+Reference:
+https://cloud.google.com/build/docs/configuring-builds/substitute-variable-values#using_user-defined_substitutions
+
+## Local Build
+
+Build container image
+
+```
+docker build -t simple-channel-notify .
 ```
