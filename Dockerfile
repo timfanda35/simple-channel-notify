@@ -6,9 +6,8 @@ COPY . ./
 RUN make build
 
 # Builder
-FROM scratch
+FROM alpine
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /src/app /
 
 ENTRYPOINT ["/app"]
