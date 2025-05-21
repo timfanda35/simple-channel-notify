@@ -50,41 +50,6 @@ func notifyTelegram(message string) {
 }
 
 /*
-	# Line Notify
-
-	Parameters:
-	- message
-
-  Environment variables:
-  - NOTIFY_LINE_NOTIFY_TOKEN
-*/
-func notifyLineNotify(message string) {
-	// Load environment variables
-	lineNotifyToken, ok := os.LookupEnv("NOTIFY_LINE_NOTIFY_TOKEN")
-	if !ok {
-		log.Fatal("NOTIFY_LINE_NOTIFY_TOKEN environment variable is unset")
-	}
-
-	endpoint := "https://notify-api.line.me/api/notify"
-	data := url.Values{"message": {message}}
-	body := strings.NewReader(data.Encode())
-
-	req, err := http.NewRequest("POST", endpoint, body)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", lineNotifyToken))
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	ioutil.ReadAll(resp.Body)
-	log.Print("Line Notify notified")
-}
-
-/*
 	# Hangouts Chat
 
 	Parameters:
@@ -185,9 +150,6 @@ func main() {
 	telegramCmd := flag.NewFlagSet("telegram", flag.ExitOnError)
 	telegramMessage := telegramCmd.String("message", "This is a test message", "message")
 
-	lineNotifyCmd := flag.NewFlagSet("linenotify", flag.ExitOnError)
-	lineNotifyMessage := lineNotifyCmd.String("message", "This is a test message", "message")
-
 	hangoutsChatCmd := flag.NewFlagSet("hangoutschat", flag.ExitOnError)
 	hangoutsChatMessage := hangoutsChatCmd.String("message", "This is a test message", "message")
 
@@ -198,7 +160,7 @@ func main() {
 	discordMessage := discordCmd.String("message", "This is a test message", "message")
 
 	if len(os.Args) < 2 {
-		log.Println("Expected 'telegram', 'linenotify', 'hangoutschat', 'slack', or 'discord'")
+		log.Println("Expected 'telegram', 'hangoutschat', 'slack', or 'discord'")
 		os.Exit(1)
 	}
 
@@ -206,9 +168,6 @@ func main() {
 	case "telegram":
 		telegramCmd.Parse(os.Args[2:])
 		notifyTelegram(*telegramMessage)
-	case "linenotify":
-		lineNotifyCmd.Parse(os.Args[2:])
-		notifyLineNotify(*lineNotifyMessage)
 	case "hangoutschat":
 		hangoutsChatCmd.Parse(os.Args[2:])
 		notifyHangoutsChat(*hangoutsChatMessage)
@@ -219,7 +178,7 @@ func main() {
 		discordCmd.Parse(os.Args[2:])
 		notifyDiscord(*discordMessage)
 	default:
-		log.Println("Expected 'telegram', 'linenotify', 'hangoutschat', 'slack', or 'discord'")
+		log.Println("Expected 'telegram', 'hangoutschat', 'slack', or 'discord'")
 		os.Exit(1)
 	}
 }
