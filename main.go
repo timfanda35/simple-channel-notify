@@ -3,23 +3,22 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 )
 
 /*
-	# Telegram
+		# Telegram
 
-	Parameters:
-	- message
+		Parameters:
+		- message
 
-  Environment variables:
-  - NOTIFY_TELEGRAM_TOKEN
-  - NOTIFY_TELEGRAM_CHAT_ID
+	  Environment variables:
+	  - NOTIFY_TELEGRAM_TOKEN
+	  - NOTIFY_TELEGRAM_CHAT_ID
 */
 func notifyTelegram(message string) {
 	// Load environment variables
@@ -35,7 +34,7 @@ func notifyTelegram(message string) {
 	endpoint := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", telegramToken)
 	payload := fmt.Sprintf(`{"chat_id": "%s","text":"%s"}`, telegramChatID, message)
 
-	req, err := http.NewRequest("POST", endpoint, strings.NewReader(payload))
+	req, _ := http.NewRequest("POST", endpoint, strings.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -45,18 +44,18 @@ func notifyTelegram(message string) {
 	}
 	defer resp.Body.Close()
 
-	ioutil.ReadAll(resp.Body)
+	io.ReadAll(resp.Body)
 	log.Print("Telegram notified")
 }
 
 /*
-	# Hangouts Chat
+		# Hangouts Chat
 
-	Parameters:
-	- message
+		Parameters:
+		- message
 
-  Environment variables:
-  - NOTIFY_HANGOUTS_CHAT_WEBHOOK
+	  Environment variables:
+	  - NOTIFY_HANGOUTS_CHAT_WEBHOOK
 */
 func notifyHangoutsChat(message string) {
 	// Load environment variables
@@ -67,7 +66,7 @@ func notifyHangoutsChat(message string) {
 
 	payload := fmt.Sprintf(`{"text":"%s"}`, message)
 
-	req, err := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
+	req, _ := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -77,18 +76,18 @@ func notifyHangoutsChat(message string) {
 	}
 	defer resp.Body.Close()
 
-	ioutil.ReadAll(resp.Body)
+	io.ReadAll(resp.Body)
 	log.Print("Hangouts Chat notified")
 }
 
 /*
-	# Slack
+		# Slack
 
-	Parameters:
-	- message
+		Parameters:
+		- message
 
-  Environment variables:
-  - NOTIFY_SLACK_WEBHOOK
+	  Environment variables:
+	  - NOTIFY_SLACK_WEBHOOK
 */
 func notifySlack(message string) {
 	// Load environment variables
@@ -99,7 +98,7 @@ func notifySlack(message string) {
 
 	payload := fmt.Sprintf(`{"text":"%s"}`, message)
 
-	req, err := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
+	req, _ := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -109,18 +108,18 @@ func notifySlack(message string) {
 	}
 	defer resp.Body.Close()
 
-	ioutil.ReadAll(resp.Body)
+	io.ReadAll(resp.Body)
 	log.Print("Slack notified")
 }
 
 /*
-	# Discord
+		# Discord
 
-	Parameters:
-	- message
+		Parameters:
+		- message
 
-  Environment variables:
-  - NOTIFY_DISCORD_WEBHOOK
+	  Environment variables:
+	  - NOTIFY_DISCORD_WEBHOOK
 */
 func notifyDiscord(message string) {
 	// Load environment variables
@@ -131,7 +130,7 @@ func notifyDiscord(message string) {
 
 	payload := fmt.Sprintf(`{"content":"%s"}`, message)
 
-	req, err := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
+	req, _ := http.NewRequest("POST", hangoutsChatWebhook, strings.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
@@ -141,7 +140,7 @@ func notifyDiscord(message string) {
 	}
 	defer resp.Body.Close()
 
-	ioutil.ReadAll(resp.Body)
+	io.ReadAll(resp.Body)
 	log.Print("Discord notified")
 }
 
